@@ -4,8 +4,6 @@ using BoxFactory.Models;
 using BoxFactory.Services;
 
 
-
-
 Console.WriteLine("what size base would you like?");
 double x;
 double.TryParse(Console.ReadLine(), out x);
@@ -18,7 +16,7 @@ BoxDb boxDb = new BoxDb();
 
 boxDb.Add(90, 60, 10);
 boxDb.Add(90, 60, 9);
-BoxList? boxList = boxDb.GetBoxes(85, 62);
+LList<BoxBatch>? boxList = boxDb.GetBoxes(85, 62);
 if (boxList != null)
 {
     foreach (BoxBatch bb in boxList)
@@ -26,7 +24,7 @@ if (boxList != null)
         Console.WriteLine(bb.Count);
     }
 
-    BoxList.BoxListEnumerator iterator = boxList.GetEnumerator();
+    LList<BoxBatch>.BoxListEnumerator iterator = boxList.GetEnumerator();
     while (iterator.MoveNext())
     {
         if (iterator.Current.Count == 10)

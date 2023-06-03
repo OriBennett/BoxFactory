@@ -5,15 +5,16 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace BoxFactory.Models;
 
-public class BoxList : ICollection<BoxBatch>
+
+public class LList<T> : ICollection<T>
 {
     public class Node 
     {
-        public BoxBatch? theBox;
+        public T? theBox;
 
         public Node? Next;
         
-        public Node(BoxBatch box)
+        public Node(T box)
         {
             theBox = box;
         }
@@ -23,10 +24,10 @@ public class BoxList : ICollection<BoxBatch>
     int _count = 0;
     public int Count { get => _count; set => _count = value; }
 
-    public BoxList(ICollection<BoxBatch> collection) => throw new NotImplementedException();
-    public BoxList() { }
+    public LList(ICollection<T> collection) => throw new NotImplementedException();
+    public LList() { }
 
-    public void Add(BoxBatch box)
+    public void Add(T box)
     {
         Node toInsert = new Node(box);
         if (head == null)
@@ -45,14 +46,14 @@ public class BoxList : ICollection<BoxBatch>
         head = null;
         _count = 0;
     }
-    public bool Remove(BoxBatch box)
+    public bool Remove(T box)
     {
         if (head == null)
         {
             return false;
         }
 
-        if (head.theBox == box)
+        if (object.Equals(head.theBox, box))
         {
             head = head.Next;
             _count--;
@@ -64,7 +65,7 @@ public class BoxList : ICollection<BoxBatch>
 
         while (current != null)
         {
-            if (current.theBox == box)
+            if (object.Equals(current.theBox, box))
             {
                 prev.Next = current.Next;
                 _count--;
@@ -89,20 +90,20 @@ public class BoxList : ICollection<BoxBatch>
         _count--;
         return true;
     }
-    public BoxBatch? GetFirst() { return head?.theBox; }
+    public T GetFirst() { return head.theBox; }
 
     public bool IsReadOnly
     {
         get { return false; }
     }
 
-    public void CopyTo(BoxBatch[] array, int arrayIndex) => throw new NotImplementedException();
-    bool ICollection<BoxBatch>.Contains(BoxBatch item)
+    public void CopyTo(T[] array, int arrayIndex) => throw new NotImplementedException();
+    bool ICollection<T>.Contains(T item)
     {     
         Node? current = head;
         while (current != null)
         {
-            if (current.theBox == item)
+            if (object.Equals(current.theBox, item))
             {
                 return true;
             }
@@ -112,22 +113,22 @@ public class BoxList : ICollection<BoxBatch>
     }
     public void Dispose(){ }
 
-    public class BoxListEnumerator : IEnumerator<BoxBatch>
+    public class BoxListEnumerator : IEnumerator<T>
     {
-        private BoxList? _list;
-        private BoxList.Node? prevNode;
-        private BoxList.Node? curNode;
-        private BoxBatch? currBox;
+        private LList<T>? _list;
+        private LList<T>.Node? prevNode;
+        private LList<T>.Node? curNode;
+        private T? currBox;
 
         private void initHead()
         {
-            BoxList.Node firstNode = new BoxList.Node(null);
+            LList<T>.Node firstNode = new LList<T>.Node(default(T));
             firstNode.Next = _list.head;
             curNode = firstNode;
             prevNode = null;
         }
 
-        public BoxListEnumerator(BoxList list)
+        public BoxListEnumerator(LList<T> list)
         {
             _list = list;
             initHead();
@@ -165,7 +166,7 @@ public class BoxList : ICollection<BoxBatch>
                 return false;
             }
             
-            if (currBox == _list?.head?.theBox)
+            if (object.Equals(currBox, _list.head.theBox))
             {
                 _list?.Remove(currBox);
                 initHead();
@@ -185,7 +186,7 @@ public class BoxList : ICollection<BoxBatch>
         {
         }
 
-        public BoxBatch Current
+        public T Current
         {
             get { return currBox; }
         }
@@ -199,7 +200,7 @@ public class BoxList : ICollection<BoxBatch>
     public BoxListEnumerator GetEnumerator()
     { return new BoxListEnumerator(this); }
 
-    IEnumerator<BoxBatch> IEnumerable<BoxBatch>.GetEnumerator()
+    IEnumerator<T> IEnumerable<T>.GetEnumerator()
     {
         return new BoxListEnumerator(this);
     }

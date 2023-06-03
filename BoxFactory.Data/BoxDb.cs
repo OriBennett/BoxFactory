@@ -7,40 +7,40 @@ namespace BoxFactory.Data;
 public class BoxDb
 {
     private const int BIN_NUM = 10000;
-    private readonly BoxList[]?[] grid; 
+    private readonly LList<BoxBatch>[]?[] grid; 
     public BoxDb()
     {
-        grid = new BoxList[BIN_NUM][];
+        grid = new LList<BoxBatch>[BIN_NUM][];
     }
 
-    private BoxList GetOrCreateBoxList(int x, int y)
+    private LList<BoxBatch> GetOrCreateBoxList(int x, int y)
     {
-        BoxList[]? column = grid[x];
+        LList<BoxBatch>[]? column = grid[x];
         if (column == null)
         {
-            grid[x] = new BoxList[BIN_NUM];
+            grid[x] = new LList<BoxBatch>[BIN_NUM];
             column = grid[x];
         }
 
-        BoxList? boxList = column[y];
+        LList<BoxBatch>? boxList = column[y];
         if (boxList == null)
         {
-            column[y] = new BoxList();
+            column[y] = new LList<BoxBatch>();
             boxList = column[y];
         }
 
         return boxList;
     }
 
-    private BoxList? GetBoxList(int x, int y)
+    private LList<BoxBatch>? GetBoxList(int x, int y)
     {
-        BoxList[]? column = grid[x];
+        LList<BoxBatch>[]? column = grid[x];
         if (column == null)
         {
             return null;
         }
 
-        BoxList? boxList = column[y];
+        LList<BoxBatch>? boxList = column[y];
         if (boxList == null)
         {
             return null;
@@ -58,15 +58,15 @@ public class BoxDb
 
     public void Add(int x, int y, int count)
     { 
-        BoxList boxList = GetOrCreateBoxList(x, y);
+        LList<BoxBatch> boxList = GetOrCreateBoxList(x, y);
         DateTime now = DateTime.Now.AddYears(1);
         BoxBatch newBox = new BoxBatch(now, count);
         boxList.Add(newBox);
     }
 
-    public BoxList? GetBoxes(int x, int y)
+    public LList<BoxBatch>? GetBoxes(int x, int y)
     {
-        BoxList? boxList = GetBoxList(x, y);
+        LList<BoxBatch>? boxList = GetBoxList(x, y);
         if (boxList != null)
         {
             return boxList;
