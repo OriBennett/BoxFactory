@@ -17,7 +17,44 @@ BoxDb boxDb = new BoxDb();
 
 
 boxDb.Add(90, 60, 10);
-//boxDb.Get(90, 60, 10);
+boxDb.Add(90, 60, 9);
 BoxList? boxList = boxDb.GetBoxes(85, 62);
+if (boxList != null)
+{
+    foreach (BoxBatch bb in boxList)
+    {
+        Console.WriteLine(bb.Count);
+    }
+
+    BoxList.BoxListEnumerator iterator = boxList.GetEnumerator();
+    while (iterator.MoveNext())
+    {
+        if (iterator.Current.Count == 10)
+        {
+            iterator.Erase();
+        }
+    }
+
+    foreach (BoxBatch bb in boxList)
+    {
+        Console.WriteLine(bb.Count);
+    }
+
+    iterator = boxList.GetEnumerator();
+    while (iterator.MoveNext())
+    {
+        if (iterator.Current.Count == 9)
+        {
+            iterator.Erase();
+        }
+    }
+
+    foreach (BoxBatch bb in boxList)
+    {
+        Console.WriteLine(bb.Count);
+    }
+
+}
+
 Console.ReadLine();
 

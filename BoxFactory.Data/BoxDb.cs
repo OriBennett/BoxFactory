@@ -46,6 +46,13 @@ public class BoxDb
             return null;
         }
 
+        // lazy deletition
+        if (boxList.Count == 0)
+        {
+            column[y] = null;
+            return null;
+        }
+
         return boxList;
     }
 
