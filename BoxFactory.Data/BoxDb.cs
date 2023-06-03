@@ -1,16 +1,23 @@
 ﻿using BoxFactory.Models;
+using System.Collections;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
+using static BoxFactory.Data.BoxDb;
+using static BoxFactory.Models.BoxBatch;
 
 namespace BoxFactory.Data;
 
 public class BoxDb
 {
     private const int BIN_NUM = 10000;
-    private readonly LList<BoxBatch>[]?[] grid; 
+    private readonly LList<BoxBatch>[]?[] grid;
+    private readonly LList<LList<BoxBatch>> allLists;
+
     public BoxDb()
     {
         grid = new LList<BoxBatch>[BIN_NUM][];
+        allLists = new LList<LList<BoxBatch>>();
     }
 
     private LList<BoxBatch> GetOrCreateBoxList(int x, int y)
@@ -27,6 +34,8 @@ public class BoxDb
         {
             column[y] = new LList<BoxBatch>();
             boxList = column[y];
+
+            allLists.Add(boxList);
         }
 
         return boxList;
@@ -110,5 +119,62 @@ public class BoxDb
         }
 
         return null;
+    }
+
+    public class ListsIterator : IEnumerator<BoxBatch>
+    {
+        private LList<BoxBatch>.BoxListEnumerator<BoxBatch> _listIterator;
+        private LList<LList<BoxBatch>>.BoxListEnumerator<LList<BoxBatch>> _listsIterator;
+
+        public ListsIterator(LList<LList<BoxBatch>> listsHead)
+        {
+            _listsIterator = listsHead.GetEnumerator();
+            _listsIterator.MoveNext();
+            LList<BoxBatch> firstList = _listsIterator.Current;
+            _listIterator = firstList.GetEnumerator();            
+        }
+        public BoxBatch Current
+        {
+            get { return _listIterator.Current; }
+        }
+
+        object IEnumerator.Current
+        {
+            get { return Current; }
+        }
+
+        public void Dispose()
+        { }
+
+        public bool MoveNext()
+        {
+            ;
+            while (_listIterator.MoveNext() == false)
+            {
+                bool isNExtListNotNull = _listsIterator.MoveNext();
+                if (isNExtListNotNull == false)
+                {
+                    return false;
+                }
+
+                LList<BoxBatch> firstList = _listsIterator.Current;
+                _listIterator = firstList.GetEnumerator();
+            }
+
+            return true;
+        }
+
+        public void Reset()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ListsIterator GetEnumerator()
+        { return this; }
+
+    }
+    public ListsIterator GetAllLists()
+    {
+        return new ListsIterator(allLists);
     }
 }

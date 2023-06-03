@@ -113,7 +113,7 @@ public class LList<T> : ICollection<T>
     }
     public void Dispose(){ }
 
-    public class BoxListEnumerator : IEnumerator<T>
+    public class BoxListEnumerator<T> : IEnumerator<T>
     {
         private LList<T>? _list;
         private LList<T>.Node? prevNode;
@@ -197,17 +197,17 @@ public class LList<T> : ICollection<T>
         }
     }
 
-    public BoxListEnumerator GetEnumerator()
-    { return new BoxListEnumerator(this); }
+    public BoxListEnumerator<T> GetEnumerator()
+    { return new BoxListEnumerator<T>(this); }
 
     IEnumerator<T> IEnumerable<T>.GetEnumerator()
     {
-        return new BoxListEnumerator(this);
+        return new BoxListEnumerator<T>(this);
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return new BoxListEnumerator(this);
+        return new BoxListEnumerator<T>(this);
     }
 }
 

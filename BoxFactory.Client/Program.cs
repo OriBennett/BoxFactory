@@ -16,6 +16,16 @@ BoxDb boxDb = new BoxDb();
 
 boxDb.Add(90, 60, 10);
 boxDb.Add(90, 60, 9);
+
+boxDb.Add(5, 5, 8);
+
+BoxDb.ListsIterator iteratorr = boxDb.GetAllLists();
+
+foreach (BoxBatch bb in iteratorr)
+{
+    Console.WriteLine(bb.Count);
+}
+
 LList<BoxBatch>? boxList = boxDb.GetBoxes(85, 62);
 if (boxList != null)
 {
@@ -24,7 +34,7 @@ if (boxList != null)
         Console.WriteLine(bb.Count);
     }
 
-    LList<BoxBatch>.BoxListEnumerator iterator = boxList.GetEnumerator();
+    LList<BoxBatch>.BoxListEnumerator<BoxBatch> iterator = boxList.GetEnumerator();
     while (iterator.MoveNext())
     {
         if (iterator.Current.Count == 10)
