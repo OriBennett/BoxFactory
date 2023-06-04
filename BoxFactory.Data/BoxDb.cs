@@ -55,10 +55,9 @@ public class BoxDb
             return null;
         }
 
-        // lazy deletition
+        // Get function not returning empty list, it is done only in GetOrCreateBoxList
         if (boxList.Count == 0)
         {
-            column[y] = null;
             return null;
         }
 

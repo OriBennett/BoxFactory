@@ -64,5 +64,19 @@ if (boxList != null)
 
 }
 
+boxList = boxDb.GetBoxes(5, 5);
+LList<BoxBatch>.BoxListEnumerator<BoxBatch>  iterator3 = boxList.GetEnumerator();
+while (iterator3.MoveNext())
+{
+    iterator3.Erase();
+}
+
+iteratorr = boxDb.GetAllLists();
+
+foreach (BoxBatch bb in iteratorr)
+{
+    Console.WriteLine("Lefover");
+}
+
 Console.ReadLine();
 
