@@ -10,16 +10,54 @@ namespace BoxFactory.Data;
 
 public class BoxDb
 {
+ // Variables:
+    // Hard coded max size of each dimention.
     private const int BIN_NUM = 10000;
+
+    // Grid of lists of box batches.
     private readonly LList<BoxBatch>[]?[] grid;
+
+    // List of all of the created lists of box batches in the grid.
     private readonly LList<LList<BoxBatch>> allLists;
 
-    public BoxDb()
+ // Private methods:
+    // Check if input parameters are legal.
+    private static bool isInputLegal(int x, int y)
     {
-        grid = new LList<BoxBatch>[BIN_NUM][];
-        allLists = new LList<LList<BoxBatch>>();
+        if (x <= 0 || x >= BIN_NUM)
+        {
+            Console.WriteLine("Input value of x in ilegal, must be between 1 and " + (BIN_NUM -1));
+            return false;
+        }
+
+        if (y <= 0 || y >= BIN_NUM)
+        {
+            Console.WriteLine("Input value of y in ilegal, must be between 1 and " + (BIN_NUM - 1));
+            return false;
+        }
+
+        return true;
     }
 
+    // Check if input parameters are legal.
+    private static bool isInputLegal(int x, int y, int count)
+    {
+        if (isInputLegal(x,y) == false)
+        {
+            return false;
+        }
+
+        if(count <= 0)
+        {
+            Console.WriteLine("Input value of count in ilegal, must be grater than 0");
+            return false;
+        }
+
+        return true;
+    }
+
+    // Getting a list in the specified indexes, or creating one if it not exists.
+    // On creation, updating both grid and allLists. 
     private LList<BoxBatch> GetOrCreateBoxList(int x, int y)
     {
         LList<BoxBatch>[]? column = grid[x];
@@ -41,6 +79,8 @@ public class BoxDb
         return boxList;
     }
 
+    // Getting a list from the grid in the specified indexes.
+    // If the list is empty, returns null
     private LList<BoxBatch>? GetBoxList(int x, int y)
     {
         LList<BoxBatch>[]? column = grid[x];
@@ -64,16 +104,36 @@ public class BoxDb
         return boxList;
     }
 
+ // Public methods:
+    // Constuctor.
+    public BoxDb()
+    {
+        grid = new LList<BoxBatch>[BIN_NUM][];
+        allLists = new LList<LList<BoxBatch>>();
+    }
+
+    // Adding new box batch.
     public void Add(int x, int y, int count)
     { 
+        if (isInputLegal(x, y, count) == false)
+        {
+            return;
+        }
+
         LList<BoxBatch> boxList = GetOrCreateBoxList(x, y);
         DateTime now = DateTime.Now.AddYears(1);
         BoxBatch newBox = new BoxBatch(now, count);
         boxList.Add(newBox);
     }
 
+    // Returning all boxes with the provided dimentions.
     public LList<BoxBatch>? GetBoxes(int x, int y)
     {
+        if (isInputLegal(x, y) == false)
+        {
+            return null;
+        }  
+
         LList<BoxBatch>? boxList = GetBoxList(x, y);
         if (boxList != null)
         {
@@ -120,6 +180,7 @@ public class BoxDb
         return null;
     }
 
+    // Iterator class for iterating box batches over a list of lists of box batches.
     public class ListsIterator : IEnumerator<BoxBatch>
     {
         private LList<BoxBatch>.BoxListEnumerator<BoxBatch> _listIterator;
@@ -172,6 +233,8 @@ public class BoxDb
         { return this; }
 
     }
+
+    // Returning all boxes in system.
     public ListsIterator GetAllLists()
     {
         return new ListsIterator(allLists);
